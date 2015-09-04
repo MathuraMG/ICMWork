@@ -31,15 +31,41 @@ function setColours() {
   }
 }
 
-function draw() {
+function draw() 
+
+{
+
+  //colour the rectangle
   fill(250, 220, 50);
   rect(0, 0, 1000, 500);
+
+
+  //the solid circles - in descending lightness of colours
+  fill(255, 255, 102);
+  stroke(255, 255, 102);
+  ellipse(540,370,200,200); 
+  ellipse(450,20,50,50);
+
+  fill(200, 200, 102);
+  
+  fill(153, 51, 0);
+  stroke(153, 51, 0);
+  ellipse(540,10,150,150); 
+  
+  fill(55, 18, 0);
+  stroke(55,18,0);
+  ellipse(20,350,200,200);  
+  
+
   stroke(200, 200, 102);
   lines(100, 100, 20, 100);
+
   stroke(153, 51, 0);
   lines(400, 400, 25, 130);
   lines(200, 130, 12, 50);
 
+
+  //Much much random line-circles
   lines(180, 220, 20, 80);
   stroke(255, 255, 102)
   lines(80, 420, 20, 100);
@@ -62,8 +88,7 @@ function draw() {
   lines(680, 220, 20, 80);
   stroke(55, 18, 0);
   lines(580, 420, 20, 100);
-  stroke(153, 51, 0);
-
+  stroke(153, 51, 0)
   lines(750, 350, 12, 50);
   stroke(255, 255, 102)
   lines(900, 130, 15, 70);
