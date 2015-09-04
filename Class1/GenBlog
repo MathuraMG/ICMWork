@@ -1,0 +1,29 @@
+Code for Capture1
+
+  for (var i = 0; i < count; i++) {
+    xarr[i] = xc + (rad * sin((2 * (22 / 7) * i) / count));
+    yarr[i] = yc + (rad * cos((2 * (22 / 7) * i) / count));
+    point(xarr[i], yarr[i]);
+  }
+
+  for (var i = 0; i < count; i++) {
+    for (var j = 0; j < count; j++) {
+      if (((i - j) != 1) && ((j - i) != 1)) {
+        stroke(255 / 16 * j, 255 / 256 * i * j, 255 / 16 * i);
+        line(xarr[i], yarr[i], xarr[j], yarr[j]);
+      }
+    }
+  }
+
+
+  	So i was going for some code where the colours get randomly selected so that the right side of my brain could doze off for a while. One thing I didnt realise was that p5 works such that the draw() function is constantly called!!! So here, even without the slightest bit of animation, there's animation!!!
+
+  	for (var i = 0; i < count; i++) {
+    for (var j = 0; j < count; j++) {
+      for (var k = 0; k < count; k++) {
+        //fill(255 / 16 * i, 255 / 16 * k, 255 / 16 * j);
+        fill(colourx[k],coloury[k],colourz[k])
+        triangle(xarr[i], yarr[i], xarr[j], yarr[j], xarr[k], yarr[k]);
+      }
+    }
+  }

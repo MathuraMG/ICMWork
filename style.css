@@ -1,0 +1,11 @@
+body{
+	background-color: #eeeeee;
+}
+
+li{
+	list-style: none;
+}
+
+a.page-heading{
+	text-decoration: none;
+}
