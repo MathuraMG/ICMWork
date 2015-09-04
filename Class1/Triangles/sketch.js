@@ -45,6 +45,7 @@ function triangles(xc, yc,rad,offset) {
 
   //fill(250, 0, 50);
   //rect(300, 300, 700, 700);
+  //Select the points on a circle
   for (var i = 0; i < count; i++) {
     xarr[i] = xc + (rad * sin((2 * (22 / 7) * i) / count));
     yarr[i] = yc + (rad * cos((2 * (22 / 7) * i) / count));
@@ -52,6 +53,7 @@ function triangles(xc, yc,rad,offset) {
 
 
   }
+  //Draw triangles between the points
   for (var i = 0; i < count; i++) {
     for (var j = 0; j < count; j++) {
       for (var k = 0; k < count; k++) {
