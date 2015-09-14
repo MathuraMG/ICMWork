@@ -58,8 +58,11 @@ function draw() {
   text('click in the lighter area to move the rods!',20,750);
   text('Refresh to change the direction of the levers',20,780);  
 
-  //text('( ' + mouseX, mouseX,mouseY);
-  //text(', ' + mouseY + ' )', mouseX+30, mouseY);
+
+  textSize(12);
+  fill(0);
+  text('( ' + mouseX, mouseX,mouseY);
+  text(', ' + mouseY + ' )', mouseX+30, mouseY);
 
   //drawGear(rad, count, xc, yc, dia, dist bw in and out, speed)
 
