@@ -50,7 +50,7 @@ function createDial(x, y, l, minVal, maxVal) {
   translate(x, y);
 
 
-  drawDial(0, 0, l * cos(180 - theta), l * sin(-theta),LineColour);
+  drawDial(0, 0, l * cos(180 - theta), l * sin(-theta), LineColour);
   pop();
 
   if (mouseIsPressed && inRange(mouseX, mouseY, xclick, yclick, x, y, l)) {
@@ -58,24 +58,17 @@ function createDial(x, y, l, minVal, maxVal) {
     yclick = mouseY;
     theta = tanInv((x - xclick), (y - yclick));
     LineColour = 10;
-  }
-  else
+  } else
     LineColour = 100;
   var value;
   //Map the values to the position of the dial
-  avg = (minVal + maxVal) / 2;
-  if (theta <= 0)
-    value = map(theta, -90, 0, avg, maxVal);
-  else
-    value = map(theta, 0, 90, minVal, avg);
+  value = map(theta, 0, 180, minVal, maxVal);
   text(value, 25, 25);
-
-  inRange(mouseX, mouseY, xclick, yclick, x, y)
 
 }
 
 function inRange(x, y, x1, y1, xCtr, yCtr, l) {
-  //FIX THIS!!!
+  // in the beggining case when the values are null
   if (!x1) x1 = xCtr;
   if (!y1) y1 = yCtr - l;
 
@@ -97,7 +90,7 @@ function drawDial(startX, startY, endX, endY, LineColour)
   }
 
 function tanInv(x, y) {
-
+  // writing this function for simplicity as atan works in different quadrants
   if (x >= 0) {
     return (atan(y / x));
   } else {
