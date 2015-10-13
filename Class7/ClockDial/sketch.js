@@ -109,7 +109,7 @@ function drawClocks(hour, minute, second) {
     if (minute + 30 > 60)
       hour2 = hour + 1;
     minute2 = (minute + 30) % 60;
-    hour2 = (hour + 9) % 24;
+    hour2 = (hour2 + 9) % 24;
     clock2 = new Clock(hour2, minute2, second, 150, 450);
     clock2.drawClock();
     textSize(20);
