@@ -26,7 +26,8 @@ function setup() {
   timeZone.option('California', 4);
 
   //create Toggle button
-  //toggle = createButton('Toggle View');
+  toggle = createButton('Toggle View');
+   toggle.mousePressed(switchView);
 
 
 
@@ -38,7 +39,8 @@ function draw() {
   image(backImg, 0, 300);
   image(backImg, 300, 0);
   image(backImg, 300, 300);
-  //toggle.mousePressed(switchView);
+ 
+  
 
   nowDate = new Date();
   //dateString = nowDate.getDate() + '-' + Number(nowDate.getMonth() + 1) + '-' + nowDate.getFullYear();
@@ -108,6 +110,8 @@ function drawClocks(hour, minute, second) {
   } {
     if (minute + 30 > 60)
       hour2 = hour + 1;
+    
+    else hour2 = hour;
     minute2 = (minute + 30) % 60;
     hour2 = (hour2 + 9) % 24;
     clock2 = new Clock(hour2, minute2, second, 150, 450);
@@ -141,4 +145,6 @@ function switchView() {
   if (view == 1) {
     view = 2;
   } else view = 1;
+
+  println(view);
 }
