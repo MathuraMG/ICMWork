@@ -1,4 +1,4 @@
-/*! p5.dom.js v0.2.2 May 30, 2015 */
+/*! p5.dom.js v0.2.4 October 6, 2015 */
 /**
  * <p>The web is much more than just canvas and p5.dom makes it easy to interact
  * with other HTML5 objects, including text, hyperlink, image, input, video,
@@ -16,7 +16,7 @@
  * <a href="http://p5js.org/download">p5 complete</a> or you can download the single file
  * <a href="https://raw.githubusercontent.com/lmccart/p5.js/master/lib/addons/p5.dom.js">
  * here</a>.</p>
- * <p>See <a href="https://github.com/processing/p5.js/wiki/Beyond-the-canvas">tutorial: beyond the canvas]</a>
+ * <p>See <a href="https://github.com/processing/p5.js/wiki/Beyond-the-canvas">tutorial: beyond the canvas</a>
  * for more info on how to use this libary.</a>
  *
  * @module p5.dom
@@ -87,7 +87,7 @@
    *
    * @method selectAll
    * @param  {String} name class or tag name of elements to search for
-   * @return {Object/p5.Element|Null} p5.Element containing node found
+   * @return {Array} Array of p5.Elements containing nodes found
    */
   p5.prototype.selectAll = function (e) {
     var arr = [];
@@ -163,8 +163,14 @@
    *
    * @method createDiv
    * @param  {String} html inner HTML for element created
-   * @return {Object/p5.Element} pointer to p5.Element holding created
-   *                           node
+   * @return {Object/p5.Element} pointer to p5.Element holding created node
+   * @example
+   * <div class='norender'><code>
+   * var myDiv;
+   * function setup() {
+   *   myDiv = createDiv('this is some text');
+   * }
+   * </code></div>
    */
 
   /**
@@ -175,8 +181,14 @@
    *
    * @method createP
    * @param  {String} html inner HTML for element created
-   * @return {Object/p5.Element} pointer to p5.Element holding created
-   *                           node
+   * @return {Object/p5.Element} pointer to p5.Element holding created node
+   * @example
+   * <div class='norender'><code>
+   * var myP;
+   * function setup() {
+   *   myP = createP('this is some text');
+   * }
+   * </code></div>
    */
 
   /**
@@ -186,8 +198,14 @@
    *
    * @method createSpan
    * @param  {String} html inner HTML for element created
-   * @return {Object/p5.Element} pointer to p5.Element holding created
-   *                           node
+   * @return {Object/p5.Element} pointer to p5.Element holding created node
+   * @example
+   * <div class='norender'><code>
+   * var mySpan;
+   * function setup() {
+   *   mySpan = createSpan('this is some text');
+   * }
+   * </code></div>
    */
   var tags = ['div', 'p', 'span'];
   tags.forEach(function(tag) {
@@ -209,17 +227,26 @@
    * @param  {String} src src path or url for image
    * @param  {String} [alt] alternate text to be used if image does not load
    * @param  {Function} [successCallback] callback to be called once image data is loaded
-   * @return {Object/p5.Element} pointer to p5.Element holding created
-   *                           node
+   * @return {Object/p5.Element} pointer to p5.Element holding created node
+   * @example
+   * <div class='norender'><code>
+   * var img;
+   * function setup() {
+   *   img = createImg('http://p5js.org/img/asterisk-01.png');
+   * }
+   * </code></div>
    */
   p5.prototype.createImg = function() {
     var elt = document.createElement('img');
     var args = arguments;
-    var self = {};
+    var self;
     var setAttrs = function(){
-      self.width = elt.width;
-      self.height = elt.height;
-      if (args.length === 3 && typeof args[2] === 'function'){
+      self.width = elt.offsetWidth;
+      self.height = elt.offsetHeight;
+      if (args.length > 1 && typeof args[1] === 'function'){
+        self.fn = args[1];
+        self.fn();
+      }else if (args.length > 1 && typeof args[2] === 'function'){
         self.fn = args[2];
         self.fn();
       }
@@ -228,12 +255,8 @@
     if (args.length > 1 && typeof args[1] === 'string'){
       elt.alt = args[1];
     }
-    if (elt.complete){
+    elt.onload = function(){
       setAttrs();
-    }else{
-      elt.onload = function(){
-        setAttrs();
-      }
     }
     self = addElement(elt, this);
     return self;
@@ -249,8 +272,14 @@
    * @param  {String} html       inner html of link element to display
    * @param  {String} [target]   target where new link should open,
    *                             could be _blank, _self, _parent, _top.
-   * @return {Object/p5.Element} pointer to p5.Element holding created
-   *                           node
+   * @return {Object/p5.Element} pointer to p5.Element holding created node
+   * @example
+   * <div class='norender'><code>
+   * var myLink;
+   * function setup() {
+   *   myLink = createA('http://p5js.org/', 'this is a link');
+   * }
+   * </code></div>
    */
   p5.prototype.createA = function(href, html, target) {
     var elt = document.createElement('a');
@@ -273,8 +302,21 @@
    * @param  {Number} min minimum value of the slider
    * @param  {Number} max maximum value of the slider
    * @param  {Number} [value] default value of the slider
-   * @return {Object/p5.Element} pointer to p5.Element holding created
-   *                           node
+   * @return {Object/p5.Element} pointer to p5.Element holding created node
+   * @example
+   * <div><code>
+   * var slider;
+   * function setup() {
+   *   slider = createSlider(0, 255, 100);
+   *   slider.position(10, 10);
+   *   slider.style('width', '80px');
+   * }
+   *
+   * function draw() {
+   *   var val = slider.value();
+   *   background(val);
+   * }
+   * </code></div>
    */
   p5.prototype.createSlider = function(min, max, value, step) {
     var elt = document.createElement('input');
@@ -282,7 +324,7 @@
     elt.min = min;
     elt.max = max;
     if (step) elt.step = step;
-    if (value) elt.value = value;
+    if (typeof(value) === "number") elt.value = value;
     return addElement(elt, this);
   };
 
@@ -296,8 +338,23 @@
    * @method createButton
    * @param  {String} label label displayed on the button
    * @param  {String} [value] value of the button
-   * @return {Object/p5.Element} pointer to p5.Element holding created
-   *                           node
+   * @return {Object/p5.Element} pointer to p5.Element holding created node
+   * @example
+   * <div class='norender'><code>
+   * var button;
+   * function setup() {
+   *   createCanvas(100, 100);
+   *   background(0);
+   *   button = createButton('click me');
+   *   button.position(19, 19);
+   *   button.mousePressed(changeBG);
+   * }
+   *
+   * function changeBG() {
+   *   var val = random(255);
+   *   background(val);
+   * }
+   * </code></div>
    */
   p5.prototype.createButton = function(label, value) {
     var elt = document.createElement('button');
@@ -308,6 +365,92 @@
   };
 
   /**
+   * Creates a checkbox &lt;input&gt;&lt;/input&gt; element in the DOM.
+   *
+   * @method createCheckbox
+   * @param  {String} [label] label displayed after checkbox
+   * @param  {boolean} [value] value of the checkbox; checked is true, unchecked is false. Unchecked if no value given
+   * @return {Object/p5.Element} pointer to p5.Element holding created node
+   */
+  p5.prototype.createCheckbox = function() {
+    var elt = document.createElement('input');
+    elt.type = 'checkbox';
+    //checkbox must be wrapped in p5.Element before label so that label appears after
+    var self = addElement(elt, this);
+    self.checked = function(){
+      if (arguments.length === 0){
+        return self.elt.checked;
+      }else if(arguments[0]){
+        self.elt.checked = true;
+      }else{
+        self.elt.checked = false;
+      }
+      return self;
+    };
+    this.value = function(val){
+      self.value = val;
+      return this;
+    };
+    if (arguments[0]){
+      var ran = Math.random().toString(36).slice(2);
+      var label = document.createElement('label');
+      elt.setAttribute('id', ran);
+      label.htmlFor = ran;
+      self.value(arguments[0]);
+      label.appendChild(document.createTextNode(arguments[0]));
+      addElement(label, this);
+    }
+    if (arguments[1]){
+      elt.checked = true;
+    }
+    return self;
+  };
+
+  /**
+   * Creates a dropdown menu &lt;select&gt;&lt;/select&gt; element in the DOM.
+   * @method createSelect
+   * @param {boolean} [multiple] [true if dropdown should support multiple selections]
+   * @return {Object/p5.Element} pointer to p5.Element holding created node
+   */
+  p5.prototype.createSelect = function(mult) {
+    var elt = document.createElement('select');
+    if (mult){
+      elt.setAttribute('multiple', 'true');
+    }
+    var self = addElement(elt, this);
+    self.option = function(name, value){
+      var opt = document.createElement('option');
+      opt.innerHTML = name;
+      if (arguments.length > 1)
+        opt.value = value;
+      else
+        opt.value = name;
+      elt.appendChild(opt);
+    };
+    self.selected = function(value){
+      var arr = [];
+      if (arguments.length > 0){
+        for (var i = 0; i < this.elt.length; i++){
+          if (value.toString() === this.elt[i].value){
+            this.elt.selectedIndex = i;
+          }
+        }
+        return this;
+      }else{
+        if (mult){
+          for (var i = 0; i < this.elt.selectedOptions.length; i++){
+            arr.push(this.elt.selectedOptions[i].value);
+          }
+          return arr;
+        }else{
+          return this.elt.value;
+        }
+      }
+    };
+    return self;
+  };
+
+  /**
    * Creates an &lt;input&gt;&lt;/input&gt; element in the DOM for text input.
    * Use .size() to set the display length of the box.
    * Appends to the container node if one is specified, otherwise
@@ -315,8 +458,7 @@
    *
    * @method createInput
    * @param  {Number} [value] default value of the input box
-   * @return {Object/p5.Element} pointer to p5.Element holding created
-   *                           node
+   * @return {Object/p5.Element} pointer to p5.Element holding created node
    */
   p5.prototype.createInput = function(value) {
     var elt = document.createElement('input');
@@ -332,8 +474,7 @@
    * @method createFileInput
    * @param  {Function} [callback] callback function for when a file loaded
    * @param  {String} [multiple] optional to allow multiple files selected
-   * @return {Object/p5.Element} pointer to p5.Element holding created DOM element
-   *                           
+   * @return {Object/p5.Element} pointer to p5.Element holding created DOM element                       
    */
   p5.prototype.createFileInput = function(callback, multiple) {
 
@@ -373,9 +514,9 @@
             };
           };
           
-          // Text of data?
+          // Text or data?
           // This should likely be improved
-          if (f.type === 'text') {
+          if (f.type.indexOf('text') > -1) {
             reader.readAsText(f);
           } else {
             reader.readAsDataURL(f);
@@ -492,14 +633,14 @@
    * by all browsers.
    *
    * @method createCapture
-   * @param  {String/Constant|Object}   type type of capture, either VIDEO or
+   * @param  {String|Constant|Object}   type type of capture, either VIDEO or
    *                                    AUDIO if none specified, default both,
    *                                    or a Constraints boject
    * @param  {Function}                 callback function to be called once
    *                                    stream has loaded
    * @return {Object/p5.Element} capture video p5.Element
    * @example
-   * <div><class='norender'><code>
+   * <div class='norender'><code>
    * var capture;
    *
    * function setup() {
@@ -512,7 +653,7 @@
    *   filter(INVERT);
    * }
    * </code></div>
-   * <div><class='norender'><code>
+   * <div class='norender'><code>
    * function setup() {
    *   createCanvas(480, 120);
    *   var constraints = {
@@ -586,8 +727,7 @@
    * @method createElement
    * @param  {String} tag tag for the new element
    * @param  {String} [content] html content to be inserted into the element
-   * @return {Object/p5.Element} pointer to p5.Element holding created
-   *                           node
+   * @return {Object/p5.Element} pointer to p5.Element holding created node
    */
   p5.prototype.createElement = function(tag, content) {
     var elt = document.createElement(tag);
@@ -608,7 +748,7 @@
    * @for p5.Element
    * @method addClass
    * @param  {String} class name of class to add
-   * @return {p5.Element}
+   * @return {Object/p5.Element}
    */
   p5.Element.prototype.addClass = function(c) {
     if (this.elt.className) {
@@ -629,7 +769,7 @@
    *
    * @method removeClass
    * @param  {String} class name of class to remove
-   * @return {p5.Element}
+   * @return {Object/p5.Element}
    */
   p5.Element.prototype.removeClass = function(c) {
     var regex = new RegExp('(?:^|\\s)'+c+'(?!\\S)');
@@ -644,7 +784,7 @@
    * Accepts either a string ID, DOM node, or p5.Element
    *
    * @method child
-   * @param  {String|Object} child the ID, DOM node, or p5.Element
+   * @param  {String|Object/p5.Element} child the ID, DOM node, or p5.Element
    *                         to add to the current element
    * @return {p5.Element}
    * @example
@@ -685,7 +825,7 @@
    * @for p5.Element
    * @method html
    * @param  {String} [html] the HTML to be placed inside the element
-   * @return {p5.Element|String}
+   * @return {Object/p5.Element|String}
    */
   p5.Element.prototype.html = function(html) {
     if (typeof html !== 'undefined') {
@@ -706,7 +846,7 @@
    * @method position
    * @param  {Number} [x] x-position relative to upper left of window
    * @param  {Number} [y] y-position relative to upper left of window
-   * @return {p5.Element}
+   * @return {Object/p5.Element}
    * @example
    * <div><code class='norender'>
    * function setup() {
@@ -739,13 +879,13 @@
    * @param  {Number} [z] z-position in px
    * @param  {Number} [perspective] sets the perspective of the parent element in px,
    * default value set to 1000px
-   * @return {p5.Element}
+   * @return {Object/p5.Element}
    * @example
-   * <div><code class='norender'>
+   * <div><code>
    * function setup() {
-   *   var cnv = createCanvas(100,100);
-   *   //translates canvas 50px to the right and 100px down
-   *   cnv.translate(50,100);
+   *   createCanvas(100,100);
+   *   //translates canvas 50px down
+   *   select('canvas').translate(0,50);
    * }
    * </code></div>
    */
@@ -777,24 +917,23 @@
    * or 3d (if 3 arguments given) space.
    * @method  rotate
    * @param  {Number} x amount of degrees to rotate the element along the x-axis in deg
-   * @param  {Number} y amount of degrees to rotate the element along the y-axis in deg
+   * @param  {Number} [y] amount of degrees to rotate the element along the y-axis in deg
    * @param  {Number} [z] amount of degrees to rotate the element along the z-axis in deg
-   * @return {p5.Element}
+   * @return {Object/p5.Element}
    * @example
-   * <div><code class='norender'>
-   * var cnv,
-   *     x = 0,
+   * <div><code>
+   * var x = 0,
    *     y = 0,
    *     z = 0;
    * function setup(){
-   *   cnv = createCanvas(100,100);
+   *   createCanvas(100,100);
    * }
    * function draw(){
    *   x+=.5 % 360;
    *   y+=.5 % 360;
    *   z+=.5 % 360;
    *   //rotates the canvas .5deg (degrees) on every axis each frame.
-   *   cnv.rotate(x,y,z);
+   *   select('canvas').rotate(x,y,z);
    * }
    * </code></div>
    */
@@ -821,15 +960,22 @@
   };
 
   /**
-   * Sets the given style (css) property of the element with the given value.
-   * If no value is specified, returns the value of the given property,
-   * or undefined if the property is not.
+   * Sets the given style (css) property (1st arg) of the element with the
+   * given value (2nd arg). If a single argument is given, .style()
+   * returns the value of the given property; however, if the single argument
+   * is given in css syntax ('text-align:center'), .style() sets the css
+   * appropriatly. .style() also handles 2d and 3d css transforms. If
+   * the 1st arg is 'rotate', 'translate', or 'position', the following arguments
+   * accept Numbers as values. ('translate', 10, 100, 50);
    *
    * @method style
    * @param  {String} property   property to be set
-   * @param  {String} [value]    value to assign to property
-   * @return {String|p5.Element} value of property, if no value is specified
-   *                             or p5.Element
+   * @param  {String|Number} [value]   value to assign to property
+   * @param  {String|Number} [value]   value to assign to property (rotate/translate)
+   * @param  {String|Number} [value]   value to assign to property (rotate/translate)
+   * @param  {String|Number} [value]   value to assign to property (translate)
+   * @return {String|Object/p5.Element} value of property, if no value is specified
+   * or p5.Element
    * @example
    * <div><code class="norender">
    * var myDiv = createDiv("I like pandas.");
@@ -838,19 +984,72 @@
    * </code></div>
    */
   p5.Element.prototype.style = function(prop, val) {
+    var self = this;
+
     if (typeof val === 'undefined') {
-      var attrs = prop.split(';');
-      for (var i=0; i<attrs.length; i++) {
-        var parts = attrs[i].split(':');
-        if (parts[0] && parts[1]) {
-          this.elt.style[parts[0].trim()] = parts[1].trim();
+      if (prop.indexOf(':') === -1) {
+        var styles = window.getComputedStyle(self.elt);
+        var style = styles.getPropertyValue(prop);
+        return style;
+      } else {
+        var attrs = prop.split(';');
+        for (var i = 0; i < attrs.length; i++) {
+          var parts = attrs[i].split(':');
+          if (parts[0] && parts[1]) {
+            this.elt.style[parts[0].trim()] = parts[1].trim();
+          }
         }
       }
     } else {
-      this.elt.style[prop] = val;
-      if (prop === 'width' || prop === 'height' || prop === 'left' || prop === 'top'){
-        var numVal = val.replace(/\D+/g,'');
-        this[prop] = parseInt(numVal);
+      if (prop === 'rotate'){
+        if (arguments.length === 2) {
+          var style = this.elt.style.transform.replace(/rotate3d\(.*\)/g, '');
+          style = style.replace(/rotate[X-Z]?\(.*\)/g, '');
+          this.elt.style.transform = 'rotate(' + arguments[0] + 'deg)';
+          this.elt.style.transform += style;
+        } else if (arguments.length === 3) {
+          var style = this.elt.style.transform.replace(/rotate3d\(.*\)/g, '');
+          style = style.replace(/rotate[X-Z]?\(.*\)/g, '');
+          this.elt.style.transform = 'rotate(' + arguments[0] + 'deg, ' + arguments[1] + 'deg)';
+          this.elt.style.transform += style;
+        } else if (arguments.length === 4) {
+          var style = this.elt.style.transform.replace(/rotate3d\(.*\)/g, '');
+          style = style.replace(/rotate[X-Z]?\(.*\)/g, '');
+          this.elt.style.transform = 'rotateX(' + arguments[0] + 'deg)';
+          this.elt.style.transform += 'rotateY(' + arguments[1] + 'deg)';
+          this.elt.style.transform += 'rotateZ(' + arguments[2] + 'deg)';
+          this.elt.style.transform += style;
+        }
+      } else if (prop === 'translate') {
+        if (arguments.length === 3) {
+          var style = this.elt.style.transform.replace(/translate3d\(.*\)/g, '');
+          style = style.replace(/translate[X-Z]?\(.*\)/g, '');
+          this.elt.style.transform = 'translate(' + arguments[0] + 'px, ' + arguments[1] + 'px)';
+          this.elt.style.transform += style;
+        } else if (arguments.length === 4) {
+          var style = this.elt.style.transform.replace(/translate3d\(.*\)/g, '');
+          style = style.replace(/translate[X-Z]?\(.*\)/g, '');
+          this.elt.style.transform = 'translate3d(' + arguments[0] + 'px,' + arguments[1] + 'px,' + arguments[2] + 'px)';
+          this.elt.style.transform += style;
+          this.elt.parentElement.style.perspective = '1000px';
+        } else if (arguments.length === 5) {
+          var style = this.elt.style.transform.replace(/translate3d\(.*\)/g, '');
+          style = style.replace(/translate[X-Z]?\(.*\)/g, '');
+          this.elt.style.transform = 'translate3d(' + arguments[0] + 'px,' + arguments[1] + 'px,' + arguments[2] + 'px)';
+          this.elt.style.transform += style;
+          this.elt.parentElement.style.perspective = arguments[3] + 'px';
+        }
+      } else if (prop === 'position') {
+        this.elt.style.left = arguments[1] + 'px';
+        this.elt.style.top = arguments[2] + 'px';
+        this.x = arguments[1];
+        this.y = arguments[2];
+      } else {
+        this.elt.style[prop] = val;
+        if (prop === 'width' || prop === 'height' || prop === 'left' || prop === 'top') {
+          var numVal = val.replace(/\D+/g, '');
+          this[prop] = parseInt(numVal, 10); 
+        }
       }
     }
     return this;
@@ -866,7 +1065,7 @@
    * @method attribute
    * @param  {String} attr       attribute to set
    * @param  {String} [value]    value to assign to attribute
-   * @return {String|p5.Element} value of attribute, if no value is
+   * @return {String|Object/p5.Element} value of attribute, if no value is
    *                             specified or p5.Element
    * @example
    * <div class="norender"><code>
@@ -890,8 +1089,7 @@
    *
    * @method value
    * @param  {String|Number}     [value]
-   * @return {String|p5.Element} value of element, if no value is
-   *                             specified or p5.Element
+   * @return {String|Object/p5.Element} value of element if no value is specified or p5.Element
    */
   p5.Element.prototype.value = function() {
     if (arguments.length > 0) {
@@ -910,7 +1108,7 @@
    * Shows the current element. Essentially, setting display:block for the style.
    *
    * @method show
-   * @return {p5.Element}
+   * @return {Object/p5.Element}
    */
   p5.Element.prototype.show = function() {
     this.elt.style.display = 'block';
@@ -921,7 +1119,7 @@
    * Hides the current element. Essentially, setting display:none for the style.
    *
    * @method hide
-   * @return {p5.Element}
+   * @return {Object/p5.Element}
    */
   p5.Element.prototype.hide = function() {
     this.elt.style.display = 'none';
@@ -937,7 +1135,7 @@
    * @method size
    * @param  {Number} [w] width of the element
    * @param  {Number} [h] height of the element
-   * @return {p5.Element}
+   * @return {Object/p5.Element}
    */
   p5.Element.prototype.size = function(w, h) {
     if (arguments.length === 0){
@@ -974,7 +1172,7 @@
           this.width = aW;
           this.height = aH;
         }
-        this.elt.style.overflow = 'hidden';
+        
         this.width = this.elt.offsetWidth;
         this.height = this.elt.offsetHeight;
 
@@ -1046,7 +1244,7 @@
    * Play an HTML5 media element.
    *
    * @method play
-   * @return {p5.Element}
+   * @return {Object/p5.Element}
    */
   p5.MediaElement.prototype.play = function() {
     if (this.elt.currentTime === this.elt.duration) {
@@ -1067,7 +1265,7 @@
    * Stops an HTML5 media element (sets current time to zero).
    *
    * @method stop
-   * @return {p5.Element}
+   * @return {Object/p5.Element}
    */
   p5.MediaElement.prototype.stop = function() {
     this.elt.pause();
@@ -1079,7 +1277,7 @@
    * Pauses an HTML5 media element.
    *
    * @method pause
-   * @return {p5.Element}
+   * @return {Object/p5.Element}
    */
   p5.MediaElement.prototype.pause = function() {
     this.elt.pause();
@@ -1090,7 +1288,7 @@
    * Set 'loop' to true for an HTML5 media element, and starts playing.
    *
    * @method loop
-   * @return {p5.Element}
+   * @return {Object/p5.Element}
    */
   p5.MediaElement.prototype.loop = function() {
     this.elt.setAttribute('loop', true);
@@ -1102,7 +1300,7 @@
    * when it reaches the end.
    *
    * @method noLoop
-   * @return {p5.Element}
+   * @return {Object/p5.Element}
    */
   p5.MediaElement.prototype.noLoop = function() {
     this.elt.setAttribute('loop', false);
@@ -1115,7 +1313,7 @@
    *
    * @method autoplay
    * @param {Boolean} autoplay whether the element should autoplay
-   * @return {p5.Element}
+   * @return {Object/p5.Element}
    */
   p5.MediaElement.prototype.autoplay = function(val) {
     this.elt.setAttribute('autoplay', val);
@@ -1144,7 +1342,7 @@
    *
    * @method time
    * @param {Number} [time] time to jump to (in seconds)
-   * @return {Number|p5.MediaElement} current time (in seconds)
+   * @return {Number|Object/p5.MediaElement} current time (in seconds)
    *                                  or p5.MediaElement
    */
   p5.MediaElement.prototype.time = function(val) {
@@ -1206,9 +1404,8 @@
    *  This method is meant to be used with the p5.sound.js addon library.
    *
    *  @method  connect
-   *  @param  {AudioNode|p5.sound object} audioNode AudioNode from the Web
-   *                                      Audio API, or an object from the
-   *                                      p5.sound library
+   *  @param  {AudioNode|p5.sound object} audioNode AudioNode from the Web Audio API,
+   *  or an object from the p5.sound library
    */
   p5.MediaElement.prototype.connect = function(obj) {
     var audioContext, masterOutput;
