@@ -1,0 +1,37 @@
+body {
+  background-color: #ffffff;
+  /*background-image: url('images/paisley.png');*/
+}
+
+canvas {
+  display: block;
+  background-image: url('images/paisley.png');
+  position: absolute;
+  border: 2px solid black;
+  margin: auto;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+}
+
+p {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+  color: black;
+  font-size: 10px;
+}
+
+p#heading {
+  font-weight: 200;
+  font-size: 24px;
+  text-align: center;
+}
+
+p#stationDetails {
+  font-weight: 200;
+  font-size: 12px;
+  text-align: left;
+}
+p#stationName{
+  color: #ff0000;
+}
