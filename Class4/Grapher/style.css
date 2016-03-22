@@ -1,12 +1,13 @@
 body{
-    background-color: #111111;
+    background-color: #fefefe;
 }
 
 canvas
 {
     display: block;
-    position: absolute;
-    border: 10px solid black;
+    position: inline-block;
+    border: 2px solid #888888;
+    border-radius: 10px;
     margin: auto;
     top: 0;
     bottom: 0;
@@ -19,9 +20,47 @@ canvas
     position: relative;
 
 }
+.slider-container
+{
+  margin-top:1%;
+  text-align: center;
+}
 a
 {
-    color: white;
-    font-family: helvetica;
+    color: #111111;
+    font-family: Raleway;
     font-size: 14px;
+}
+.heading
+{
+  color: #111111;
+  font-family: Raleway;
+  font-weight: 400;
+  font-size: 2em;
+  text-align: center;
+}
+.content
+{
+  width:100%;
+  display:inline-block;
+  text-align:center;
+  /*margin-left:10%;*/
+  margin-bottom:10px;
+}
+
+.content a span
+{
+  font-weight:700;
+}
+
+.axis-label
+{
+  display:inline-block;
+  color: #111111;
+  font-family: Raleway;
+  font-weight: 400;
+  font-size: 1.1em;
+  text-align: center;
+  margin-left: 10px;
+  margin-right: 10px;
 }

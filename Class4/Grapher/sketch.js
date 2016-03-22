@@ -6,59 +6,119 @@ var val = 0;
 var eq="x";
 var count = 0;
 var graphs = [];
-
+var xscale;
+var yscale = 250;
+var xaxis;
+var yaxis;
+var functionError = false;
+var sliderDiv;
 
 function setup() {
-  createCanvas(600,500);
-   background(0);
-   angleMode(DEGREES);
+  createCanvas(800,500);
+  background('#888888');
+  angleMode(DEGREES);
+
+
+  sliderDiv = createDiv('');
+  sliderDiv.class('slider-container');
+
+  var textx = createP('x-axis : ');
+  textx.class('axis-label');
+  textx.parent(sliderDiv);
+  xaxis = createSlider(1,10,5);
+  xaxis.class('slider');
+  xaxis.parent(sliderDiv);
+
+  var texty = createP('y-axis : ');
+  texty.class('axis-label');
+  texty.parent(sliderDiv);
+  yaxis = createSlider(1,10,5);
+  yaxis.class('slider');
+  yaxis.parent(sliderDiv);
+
 }
 
 function draw() {
   //background(240);
-  stroke(0);
-  strokeWeight(4);
+
+  xscale=xaxis.value()*50;
+  xscale_div = xscale/5;
+
+  yscale=yaxis.value()*50;
+  yscale_div = yscale/5;
+
+  noStroke();
   fill(255);
-  rect(0,0,500,500);
+  rect(0,0,500,500,10);
 
   stroke(0);
-  strokeWeight(4);
+  noStroke();
   fill(225);
-  rect(510,0,90,500);
+  rect(503,0,390,500,10);
   stroke(255,0,0);
   strokeWeight(1);
-
-  line(250,4,250,496);
-  line(4,250,496,250);
 
   //Horizontal lines
   stroke(240);
   for(var x=0;x<10;x++)
   {
+    stroke(225);
     line(4,x*50,496,x*50);
+    fill(180);
+    noStroke();
+    text(int(yscale-x*yscale_div),252,x*50+12);
   }
+  fill(180);
+  stroke(180);
+  text(int(yscale-x*yscale_div),252,x*50-2);
 
   //Vertical lines
   stroke(240);
   for(var x=0;x<10;x++)
   {
+    stroke(225);
     line(x*50,4 ,x*50,496);
+    fill(180);
+    noStroke();
+    text(int(-xscale+x*xscale_div),x*50+2,262);
   }
 
-   stroke(255,0,0);
+  stroke(255,0,0);
   strokeWeight(1);
   line(250,4,250,496);
   line(4,250,496,250);
-    
+
   for(var i=0;i<graphs.length;i++)
   {
     if(graphs[i].toggle == 0)
-      graphs[i].drawGraph();
-    fill(graphs[i].r,graphs[i].g, graphs[i].b);
-    stroke(graphs[i].r,graphs[i].g, graphs[i].b);
-    text(graphs[i].eq,520,20+i*20)
+    {
+      fill(graphs[i].r,graphs[i].g, graphs[i].b);
+      stroke(graphs[i].r,graphs[i].g, graphs[i].b);
+      graphs[i].drawGraph(xscale,yscale);
+    }
+    else
+    {
+      fill(180,180,180);
+      stroke(180,180,180);
+    }
+    if(functionError == true)
+    {
+      console.log('yo');
+      window.alert('Please enter a valid function');
+      functionError = false;
+      break;
+    }
+    else if(functionError == false)
+    {
+      text(graphs[i].eq,560,35+i*20)
+      stroke(180);
+      line(540,20+i*20,760,20+i*20);
+    }
+
   }
-  
+  stroke(180);
+  line(540,20+i*20,760,20+i*20);
+
 }
 
 function submit()
@@ -90,21 +150,18 @@ function mousePressed()
             if(graphs[i].toggle == 1 )
             {
               graphs[i].toggle =0;
-              graphs[i].r = graphs[i].r - 120;
-              graphs[i].g = graphs[i].g - 120;
-              graphs[i].b = graphs[i].b - 120;
             }
             else
             {
               graphs[i].toggle = 1;
-              graphs[i].r = graphs[i].r + 120;
-              graphs[i].g = graphs[i].g + 120;
-              graphs[i].b = graphs[i].b + 120;
             }
           }
-         // print(graphs[i].toggle);
         }
-
-            //print(mouseY )
     }
+}
+
+function popThisGraph(){
+  graphs.pop();
+  functionError = true;
+  console.log('in here');
 }

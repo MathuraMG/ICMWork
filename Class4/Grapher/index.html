@@ -11,37 +11,32 @@
     <script src="graph.js" type="text/javascript"></script>
     <script src="sketch.js" type="text/javascript"></script>
     <script src="parser.js" type="text/javascript"></script>
+    <link href='https://fonts.googleapis.com/css?family=Raleway:700,400,100' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="style.css">
 
 
     <style> body {padding: 0; margin: 0;} </style>
   </head>
   <body>
-   <a> Enter equation here: </a><input class="inputs" type="text" id="constant" value="x"><br>
+    <h1 class="heading"> Grapher </h1>
+    <div class="content">
+      <a> Enter equation here: </a><input class="inputs" type="text" id="constant" value="x">
+      <!--<a> Click on the equation in the right bar to toggle it's display </a>-->
+      <button class="inputs" onclick="javascript:submit()">Submit</button>
+      <button class="inputs" onclick="javascript:reset()">Reset</button>
+      <br>
+    </div>
+    <div class="content">
+      <a><span>Note:</span> Only polynomial and trign equations work!
 
-    
-     <a> Click on the equation in the right bar to toggle it's display </a>
-  <br>
-     <button class="inputs" onclick="javascript:submit()">Submit</button>
-     <button class="inputs" onclick="javascript:reset()">Reset</button>
-  <br>
-<<<<<<< HEAD
-    <a>Note: Only polynomial and trign equations work!
-=======
-    <a>Note: Only polynomial and trig equations work!
->>>>>>> de3ed1b2bacfd92795b42894925de5515da04ca4
-    <br> 
-    Eg:
-    <br>
-       
-    0.004*x^2 +8*x - 2;
-    <br>
-    sin(x)
-<<<<<<< HEAD
-=======
-  </a>
->>>>>>> de3ed1b2bacfd92795b42894925de5515da04ca4
-  </a>
+      &nbsp;&nbsp;
+      Eg:&nbsp;
+      0.004*x^2 +8*x - 2;&nbsp;
+      sin(x)
+
+      </a>
+    </div>
+
 
   </body>
 </html>

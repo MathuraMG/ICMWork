@@ -1,4 +1,7 @@
 /*!
+
+ Few edits made by Mathura Govindarajan - adding try catch block so that app continues to function even after incorrect function has been entered
+
  Based on ndef.parser, by Raphael Graf(r@undefined.ch)
  http://www.undefined.ch/mparser/index.html
 
@@ -177,56 +180,70 @@ var Parser = (function (scope) {
             var item;
             var i = 0;
             for (i = 0; i < L; i++) {
-                item = this.tokens[i];
-                var type_ = item.type_;
-                if (type_ === TNUMBER) {
-                    nstack.push(item.number_);
-                }
-                else if (type_ === TOP2) {
-                    n2 = nstack.pop();
-                    n1 = nstack.pop();
-                    f = this.ops2[item.index_];
-                    nstack.push(f(n1, n2));
-                }
-                else if (type_ === TVAR) {
-                    if (item.index_ in values) {
-                        nstack.push(values[item.index_]);
+              try{
+                    item = this.tokens[i];
+                    var type_ = item.type_;
+                    if (type_ === TNUMBER) {
+                        nstack.push(item.number_);
                     }
-                    else if (item.index_ in this.functions) {
-                        nstack.push(this.functions[item.index_]);
+                    else if (type_ === TOP2) {
+                        n2 = nstack.pop();
+                        n1 = nstack.pop();
+                        f = this.ops2[item.index_];
+                        nstack.push(f(n1, n2));
                     }
-                    else {
-                        throw new Error("undefined variable: " + item.index_);
-                    }
-                }
-                else if (type_ === TOP1) {
-                    n1 = nstack.pop();
-                    f = this.ops1[item.index_];
-                    nstack.push(f(n1));
-                }
-                else if (type_ === TFUNCALL) {
-                    n1 = nstack.pop();
-                    f = nstack.pop();
-                    if (f.apply && f.call) {
-                        if (Object.prototype.toString.call(n1) == "[object Array]") {
-                            nstack.push(f.apply(undefined, n1));
+                    else if (type_ === TVAR) {
+                        if (item.index_ in values) {
+                            nstack.push(values[item.index_]);
+                        }
+                        else if (item.index_ in this.functions) {
+                            nstack.push(this.functions[item.index_]);
                         }
                         else {
-                            nstack.push(f.call(undefined, n1));
+                            throw new Error("undefined variable: " + item.index_);
+                        }
+                    }
+                    else if (type_ === TOP1) {
+                        n1 = nstack.pop();
+                        f = this.ops1[item.index_];
+                        nstack.push(f(n1));
+                    }
+                    else if (type_ === TFUNCALL) {
+                        n1 = nstack.pop();
+                        f = nstack.pop();
+                        if (f.apply && f.call) {
+                            if (Object.prototype.toString.call(n1) == "[object Array]") {
+                                nstack.push(f.apply(undefined, n1));
+                            }
+                            else {
+                                nstack.push(f.call(undefined, n1));
+                            }
+                        }
+                        else {
+                            throw new Error(f + " is not a function");
                         }
                     }
                     else {
-                        throw new Error(f + " is not a function");
+                        throw new Error("invalid Expression");
                     }
-                }
-                else {
-                    throw new Error("invalid Expression");
-                }
+                  }
+                  catch(err){
+                    //console.log(err);
+                    popThisGraph();
+                    break;
+                  }
             }
-            if (nstack.length > 1) {
-                throw new Error("invalid Expression (parity)");
+            try
+            {
+              if (nstack.length > 1) {
+                  throw new Error("invalid Expression (parity)");
+              }
+              return nstack[0];
             }
-            return nstack[0];
+            catch(err){
+              //console.log(err);
+              popThisGraph();
+            }
         },
 
         toString: function (toJS) {
@@ -237,49 +254,56 @@ var Parser = (function (scope) {
             var L = this.tokens.length;
             var item;
             var i = 0;
-            for (i = 0; i < L; i++) {
-                item = this.tokens[i];
-                var type_ = item.type_;
-                if (type_ === TNUMBER) {
-                    nstack.push(escapeValue(item.number_));
-                }
-                else if (type_ === TOP2) {
-                    n2 = nstack.pop();
-                    n1 = nstack.pop();
-                    f = item.index_;
-                    if (toJS && f == "^") {
-                        nstack.push("Math.pow(" + n1 + "," + n2 + ")");
-                    }
-                    else {
-                        nstack.push("(" + n1 + f + n2 + ")");
-                    }
-                }
-                else if (type_ === TVAR) {
-                    nstack.push(item.index_);
-                }
-                else if (type_ === TOP1) {
-                    n1 = nstack.pop();
-                    f = item.index_;
-                    if (f === "-") {
-                        nstack.push("(" + f + n1 + ")");
-                    }
-                    else {
-                        nstack.push(f + "(" + n1 + ")");
-                    }
-                }
-                else if (type_ === TFUNCALL) {
-                    n1 = nstack.pop();
-                    f = nstack.pop();
-                    nstack.push(f + "(" + n1 + ")");
-                }
-                else {
-                    throw new Error("invalid Expression");
-                }
+            try
+            {
+              for (i = 0; i < L; i++) {
+                  item = this.tokens[i];
+                  var type_ = item.type_;
+                  if (type_ === TNUMBER) {
+                      nstack.push(escapeValue(item.number_));
+                  }
+                  else if (type_ === TOP2) {
+                      n2 = nstack.pop();
+                      n1 = nstack.pop();
+                      f = item.index_;
+                      if (toJS && f == "^") {
+                          nstack.push("Math.pow(" + n1 + "," + n2 + ")");
+                      }
+                      else {
+                          nstack.push("(" + n1 + f + n2 + ")");
+                      }
+                  }
+                  else if (type_ === TVAR) {
+                      nstack.push(item.index_);
+                  }
+                  else if (type_ === TOP1) {
+                      n1 = nstack.pop();
+                      f = item.index_;
+                      if (f === "-") {
+                          nstack.push("(" + f + n1 + ")");
+                      }
+                      else {
+                          nstack.push(f + "(" + n1 + ")");
+                      }
+                  }
+                  else if (type_ === TFUNCALL) {
+                      n1 = nstack.pop();
+                      f = nstack.pop();
+                      nstack.push(f + "(" + n1 + ")");
+                  }
+                  else {
+                      throw new Error("invalid Expression");
+                  }
+              }
+              if (nstack.length > 1) {
+                  throw new Error("invalid Expression (parity)");
+              }
+              return nstack[0];
             }
-            if (nstack.length > 1) {
-                throw new Error("invalid Expression (parity)");
+            catch(err){
+              //console.log(err);
+              popThisGraph();
             }
-            return nstack[0];
         },
 
         variables: function () {
@@ -697,10 +721,17 @@ var Parser = (function (scope) {
         },
 
         error_parsing: function (column, msg) {
+          try
+          {
             this.success = false;
             this.errormsg = "parse error [column " + (column) + "]: " + msg;
             this.column = column;
             throw new Error(this.errormsg);
+          }
+          catch(err){
+            //console.log(err);
+            popThisGraph();
+          }
         },
 
 //\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
@@ -740,53 +771,59 @@ var Parser = (function (scope) {
         unescape: function(v, pos) {
             var buffer = [];
             var escaping = false;
+            try
+            {
+              for (var i = 0; i < v.length; i++) {
+                  var c = v.charAt(i);
 
-            for (var i = 0; i < v.length; i++) {
-                var c = v.charAt(i);
-
-                if (escaping) {
-                    switch (c) {
-                    case "'":
-                        buffer.push("'");
-                        break;
-                    case '\\':
-                        buffer.push('\\');
-                        break;
-                    case '/':
-                        buffer.push('/');
-                        break;
-                    case 'b':
-                        buffer.push('\b');
-                        break;
-                    case 'f':
-                        buffer.push('\f');
-                        break;
-                    case 'n':
-                        buffer.push('\n');
-                        break;
-                    case 'r':
-                        buffer.push('\r');
-                        break;
-                    case 't':
-                        buffer.push('\t');
-                        break;
-                    case 'u':
-                        // interpret the following 4 characters as the hex of the unicode code point
-                        var codePoint = parseInt(v.substring(i + 1, i + 5), 16);
-                        buffer.push(String.fromCharCode(codePoint));
-                        i += 4;
-                        break;
-                    default:
-                        throw this.error_parsing(pos + i, "Illegal escape sequence: '\\" + c + "'");
-                    }
-                    escaping = false;
-                } else {
-                    if (c == '\\') {
-                        escaping = true;
-                    } else {
-                        buffer.push(c);
-                    }
-                }
+                  if (escaping) {
+                      switch (c) {
+                      case "'":
+                          buffer.push("'");
+                          break;
+                      case '\\':
+                          buffer.push('\\');
+                          break;
+                      case '/':
+                          buffer.push('/');
+                          break;
+                      case 'b':
+                          buffer.push('\b');
+                          break;
+                      case 'f':
+                          buffer.push('\f');
+                          break;
+                      case 'n':
+                          buffer.push('\n');
+                          break;
+                      case 'r':
+                          buffer.push('\r');
+                          break;
+                      case 't':
+                          buffer.push('\t');
+                          break;
+                      case 'u':
+                          // interpret the following 4 characters as the hex of the unicode code point
+                          var codePoint = parseInt(v.substring(i + 1, i + 5), 16);
+                          buffer.push(String.fromCharCode(codePoint));
+                          i += 4;
+                          break;
+                      default:
+                          throw this.error_parsing(pos + i, "Illegal escape sequence: '\\" + c + "'");
+                      }
+                      escaping = false;
+                  } else {
+                      if (c == '\\') {
+                          escaping = true;
+                      } else {
+                          buffer.push(c);
+                      }
+                  }
+              }
+            }
+            catch(err){
+              //console.log(err);
+              popThisGraph();
             }
 
             return buffer.join('');
